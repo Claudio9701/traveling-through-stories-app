@@ -105,4 +105,4 @@ webencodings==0.5.1
 widgetsnbextension==3.5.1
 xlrd==2.0.1
 zipp==3.4.1
-https://github.com/IngenieriaUP/traveling-through-stories-model/blob/main/es_core_news_md-2.2.5/dist/es_core_news_md-2.2.5.tar.gz\?raw\=true
+https://github.com/IngenieriaUP/traveling-through-stories-model/blob/main/es_core_news_md-2.2.5/dist/es_core_news_md-2.2.5.tar.gz?raw=true
