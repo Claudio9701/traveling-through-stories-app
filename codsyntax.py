@@ -1,3 +1,4 @@
+import nltk
 import pandas as pd
 import re
 import spacy
