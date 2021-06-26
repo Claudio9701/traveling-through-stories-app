@@ -77,10 +77,11 @@ if st.checkbox('Análisis macro'):
 		if muestra!='':
 			df2=pd.read_csv('pospattern.csv',sep=';')
 			st.write(df2.head(int(muestra)))
-	st.markdown("Extraer los patrones del texto")
-	if st.button("Extraer"):
-		st.write('Espere mientras tanto')
-		spatronesintax(df)
+	# Too expensive operation
+	# st.markdown("Extraer los patrones del texto")
+	# if st.button("Extraer"):
+	#	st.write('Espere mientras tanto')
+	#	spatronesintax(df)
 
 #Check micro
 if st.checkbox('Análisis micro'):
