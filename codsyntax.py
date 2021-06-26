@@ -1,10 +1,17 @@
-import spacy
-nlp = spacy.load('es_core_news_md')
-from nltk.tokenize import sent_tokenize
-import unidecode
 import pandas as pd
 import re
+import spacy
+from nltk.tokenize import sent_tokenize
 from prefixspan import PrefixSpan
+
+# check nltk downloads
+try:
+	nltk.data.find('tokenizers/punkt.zip')
+except LookupError as e:
+	nltk.download('punkt')
+
+nlp = spacy.load('es_core_news_md')
+
 #https://spacy.io/api/annotation
 def separo(listapos,pos=True):
 	listaobj=[]
@@ -21,27 +28,30 @@ def separo(listapos,pos=True):
 				listap.append(j.dep_)
 			listaobj.append(listap)
 	return listaobj
+
 def labeltonum(oye):
-	pola=[]
+	pola = []
 	for i in oye:
 	    pola.extend(i)
-	pola=list(set(pola))
-	listanum=[]
+	pola = list(set(pola))
+	listanum = []
 	#listalen=[]
 	for i in oye:
-	    listaux=[]
+	    listaux = []
 	    for j in i:
-	    	p=pola.index(j)
+	    	p = pola.index(j)
 	    	listaux.append(p)
 	    #listalen.append(len(listaux))
 	    listanum.append(listaux)
-	return listanum,pola
+	return listanum, pola
+
 def subfinder(mylist, pattern):
 	matches = []
 	for i in range(len(mylist)):
 	    if mylist[i] == pattern[0] and mylist[i:i+len(pattern)] == pattern:
 	        matches.append(pattern)
 	return matches
+
 def correr(lista4,oye2):
 	#indis2=[]
 	indk=[]
@@ -67,6 +77,7 @@ def correr(lista4,oye2):
 	#df3['ejemploi']=indis2
 	df3=df3.sort_values('contar',ascending=False)
 	return df3
+
 def spatronesintax(libro,posv=True):
 	#empieza
 	df=libro

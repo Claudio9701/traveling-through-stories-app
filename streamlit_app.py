@@ -1,13 +1,20 @@
+import pandas as pd
+import plotly.express as px
+import nltk
+import spacy
 import streamlit as st
 import visualise_spacy_tree
-import re
 from nltk.tokenize import sent_tokenize
-import spacy
 from spacy import displacy
-import pandas as pd
-from codsyntax import *
-import plotly.express as px
 from spacy.tokens import Token
+
+from codsyntax import *
+
+# check nltk downloads
+try:
+	nltk.data.find('tokenizers/punkt.zip')
+except LookupError as e:
+	nltk.download('punkt')
 
 #funcion para dar color a los nodos
 def darcolor(doc):
@@ -30,24 +37,31 @@ def darcolor(doc):
 def load_model(name):
     nlp=spacy.load(name)
     return nlp
+
 nlp = load_model('es_core_news_md')
+
 HTML_WRAPPER = """<div style="overflow-x: auto; border: 1px solid #e6e9ef; border-radius: 0.25rem; padding: 1rem; margin-bottom: 2.5rem">{}</div>"""
 LANGUAGE = "spanish"
+
 #leer archivo
-df=pd.read_csv('Relatos_Benvenutto.csv',sep='\t')
-dfvacio=df['Texto']
-libro='Relatos_Benvenutto'
+df = pd.read_csv('Relatos_Benvenutto.csv',sep='\t')
+dfvacio = df['Texto']
+libro = 'Relatos_Benvenutto'
+
 #lista de capitulos
 @st.cache
 def listar(df):
 	cap=list(set(df['Capitulo'].tolist()))
 	cap.sort()
 	return cap
+
 st.title('Análisis de relatos de viajes con NLP')
 st.sidebar.header('Introducción')
 st.sidebar.markdown('Esta app es una herramienta para el análisis de textos del género literario relatos de viajes.')
+
 if st.sidebar.checkbox('Ver más'):
 	st.sidebar.markdown('Esta herramienta permite un análisis macro y micro del texto. En el análisis macro se tiene dos modulos, un mapa el cual muestra los personajes relacionados con la locaciones y un extractor de patrones de sintaxix que muestra los patrones más frecuentes del texto. Por otra parte, en el análisis micro se presenta una selección por capítulo, parrafo y oración del texo el cual aparecerá en el cuadro de texto. Asimismo, dentro del análisis se reconoce las entidaes y genera un árbol de sintaxis.')
+
 #Check Macro
 if st.checkbox('Análisis macro'):
 	st.header("Mapa")
@@ -67,11 +81,13 @@ if st.checkbox('Análisis macro'):
 	if st.button("Extraer"):
 		st.write('Espere mientras tanto')
 		spatronesintax(df)
+
 #Check micro
 if st.checkbox('Análisis micro'):
 	cap=listar(df)
 	#seleccion de capitulos
 	chapter=st.sidebar.selectbox('Capítulo',cap)
+
 	@st.cache
 	#indices de los parrafos
 	def indices(chapter):
@@ -81,8 +97,10 @@ if st.checkbox('Análisis micro'):
 		for i in range(nparrafos):
 			listaindi.append(str(i+1))
 		return listaindi
+
 	#seleccion de parrafos
 	parafos=st.sidebar.multiselect('Párrafo',indices(chapter))
+
 	@st.cache
 	#cargar parrafo seleccionado
 	def uptextarea(parafos,df,chapter):
@@ -93,7 +111,9 @@ if st.checkbox('Análisis micro'):
 			temp=temp+'\n'+dfparte[int(i)-1]+'.'
 		temp=temp.strip()
 		return temp
+
 	mrparrafo=uptextarea(parafos,df,chapter)
+
 	@st.cache
 	#juntar oraciones seleccionadas
 	def oraciones(oraci6,indices):
@@ -101,7 +121,8 @@ if st.checkbox('Análisis micro'):
 		for i in indices:
 			temp=temp+' '+oraci6[int(i)]
 		temp=temp.strip()
-		return temp	
+		return temp
+
 	#si quiere seleccionar por oraciones
 	oraci6=sent_tokenize(mrparrafo)
 	indiceoraciones=list(range(len(oraci6)))
@@ -111,6 +132,7 @@ if st.checkbox('Análisis micro'):
 		my_text=st.text_area('Texto a analizar',oraciones(oraci6,list(range(len(oraci6)))),height=270)
 	else:
 		my_text=st.text_area('Texto a analizar',oraciones(oraci6,oracionselec),height=180)
+	
 	#funcion de entidades
 	def entity_analyzer(my_text):
 		#nlp = load_model('models1')
@@ -122,6 +144,7 @@ if st.checkbox('Análisis micro'):
 		else:
 			html='No'
 		return html
+
 	#funcion de dependecias-arbol
 	def dep_analyzer(my_text):
 		#nlp = load_model('models1')
